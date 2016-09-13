@@ -1,0 +1,26 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    def url1 = "http://10.231.132.140:8081/nexus/content/repositories/android//" // 内网
+    def url2 = "http://maven.oschina.net/content/groups/public" // oschina提供的镜像
+
+    repositories {
+        // local file
+        flatDir { dirs 'libs' }
+        // custome url
+        maven {
+            url url1;
+        }
+        //mavenCentral()
+    }
+
+    // 依赖的lib
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        //compile files('libs/ormlite-android-4.48.jar')
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
