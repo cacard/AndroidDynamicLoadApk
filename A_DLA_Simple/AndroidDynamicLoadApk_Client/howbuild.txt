@@ -1,0 +1,1 @@
+first clean your project by ./gradlew task clean and after that call ./gradlew task build --debug

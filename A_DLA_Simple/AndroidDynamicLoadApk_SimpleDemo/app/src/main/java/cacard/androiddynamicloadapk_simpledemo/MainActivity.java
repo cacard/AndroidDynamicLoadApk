@@ -39,8 +39,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Button btn = new Button(this);
         btn.setId(btnId = View.generateViewId());
         btn.setText("Invoke Plugin's Activity");
+        btn.setOnClickListener(this);
         ll.addView(btn);
-        ll.setOnClickListener(this);
 
         setContentView(ll);
     }

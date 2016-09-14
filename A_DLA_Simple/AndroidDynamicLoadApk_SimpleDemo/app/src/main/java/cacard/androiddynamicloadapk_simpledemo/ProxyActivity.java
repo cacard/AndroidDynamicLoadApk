@@ -2,10 +2,16 @@ package cacard.androiddynamicloadapk_simpledemo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -50,13 +56,39 @@ public class ProxyActivity extends Activity {
         // ****** 接下来就是DexClassLoader登场了 *********
 
         String dexPath = DLConfig.PLUGIN_APK_PATH;
+        // 检查一下是否存在
+        File fApk = new File( dexPath);
+        if (fApk.exists() == false) {
+            MyLog.log("client not exist");
+            return;
+        } else {
+            String p = fApk.getAbsolutePath();
+            String s = fApk.getName();
+            boolean read = fApk.canRead();
+            if (!read) {
+                MyLog.log("client can't read");
+                // 需要加上读取sd卡权限；
+                return;
+            }
+        }
+
+        // 看一下packageInfo
+        PackageInfo pi = getPackageManager().getPackageArchiveInfo(dexPath, PackageManager.GET_ACTIVITIES);
+        if (pi != null && pi.activities != null && pi.activities.length > 0) {
+            for (int i = 0; i < pi.activities.length; i++) {
+                String activityName = pi.activities[i].name;
+            }
+        }
+
         // DexClassLoader需要一个输出目录，存放apk优化后的文件，不允许放到sd卡了。
         String dexOptDir = getDir("dexopt", Context.MODE_PRIVATE).getAbsolutePath();
 
 
         try {
             // 使用DexClassLoader加载Apk
-            DexClassLoader dexClassLoader = new DexClassLoader(dexPath, dexOptDir, null, getClassLoader());
+            ClassLoader clPath = getClassLoader(); // 使用这个不行
+            ClassLoader clSys = ClassLoader.getSystemClassLoader();
+            DexClassLoader dexClassLoader = new DexClassLoader(dexPath, dexOptDir, null, clSys);
 
             // 加载类型
             Class<?> clazz = dexClassLoader.loadClass(className);
@@ -66,11 +98,12 @@ public class ProxyActivity extends Activity {
             Object obj = ctor.newInstance(new Object[]{});
 
             // 注入proxy
-            Method methodProxy = clazz.getDeclaredMethod("setProxy", new Class[]{Activity.class});
+            Method methodProxy = clazz.getMethod("setProxy", new Class[]{Activity.class});
             methodProxy.invoke(obj, this);
 
             // 调起onCreate
             Method methodOnCreate = clazz.getDeclaredMethod("onCreate", new Class[]{Bundle.class});
+            methodOnCreate.setAccessible(true);
             Bundle bundle = new Bundle();
             bundle.putInt("from", 0);// 表示从宿主过去的标记
             methodOnCreate.invoke(obj, new Object[]{bundle});
@@ -80,5 +113,23 @@ public class ProxyActivity extends Activity {
             MyLog.log("error:" + e.getMessage());
         }
 
+    }
+
+
+    @Override
+    public void setContentView(int layoutResID) {
+
+        //插件会调用到这里，但其实布局文件找不到；
+        super.setContentView(layoutResID);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        super.setContentView(view, params);
     }
 }
