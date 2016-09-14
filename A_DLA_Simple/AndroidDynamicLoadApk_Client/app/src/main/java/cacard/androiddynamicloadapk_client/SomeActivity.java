@@ -16,6 +16,7 @@ public class SomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTitle("Client/SomeActivity");
 
+        // 使用动态创建的View
         LinearLayout ll = new LinearLayout(mProxy); // NOT 'this'
         TextView tv = new TextView(mProxy);
         tv.setText("Clinet->SomeActivity");

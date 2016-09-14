@@ -57,7 +57,7 @@ public class ProxyActivity extends Activity {
 
         String dexPath = DLConfig.PLUGIN_APK_PATH;
         // 检查一下是否存在
-        File fApk = new File( dexPath);
+        File fApk = new File(dexPath);
         if (fApk.exists() == false) {
             MyLog.log("error:client not exist");
             return;
@@ -82,8 +82,7 @@ public class ProxyActivity extends Activity {
 
         // DexClassLoader需要一个输出目录，存放apk优化后的文件，不允许放到sd卡了。
         String dexOptDir = getDir("dexopt", Context.MODE_PRIVATE).getAbsolutePath();
-
-
+        
         try {
             // 使用DexClassLoader加载Apk
             ClassLoader clPath = getClassLoader(); // 使用这个不行
@@ -120,10 +119,6 @@ public class ProxyActivity extends Activity {
     public void setContentView(int layoutResID) {
 
         MyLog.log("->ProxyActivity#setContentView()");
-
-        XmlResourceParser parser = getResources().getLayout(layoutResID);
-        int c = parser.getAttributeCount();
-
 
         //插件会调用到这里，但其实布局文件找不到；
         super.setContentView(layoutResID);

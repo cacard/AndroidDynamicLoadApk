@@ -14,6 +14,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 使用布局文件
         setContentView(R.layout.activity_main);
         setTitle("Client/MainActivity");
     }
