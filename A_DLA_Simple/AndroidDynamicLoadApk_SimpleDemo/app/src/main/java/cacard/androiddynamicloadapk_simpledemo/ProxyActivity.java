@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,14 +59,14 @@ public class ProxyActivity extends Activity {
         // 检查一下是否存在
         File fApk = new File( dexPath);
         if (fApk.exists() == false) {
-            MyLog.log("client not exist");
+            MyLog.log("error:client not exist");
             return;
         } else {
             String p = fApk.getAbsolutePath();
             String s = fApk.getName();
             boolean read = fApk.canRead();
             if (!read) {
-                MyLog.log("client can't read");
+                MyLog.log("error:client can't read");
                 // 需要加上读取sd卡权限；
                 return;
             }
@@ -118,6 +118,12 @@ public class ProxyActivity extends Activity {
 
     @Override
     public void setContentView(int layoutResID) {
+
+        MyLog.log("->ProxyActivity#setContentView()");
+
+        XmlResourceParser parser = getResources().getLayout(layoutResID);
+        int c = parser.getAttributeCount();
+
 
         //插件会调用到这里，但其实布局文件找不到；
         super.setContentView(layoutResID);

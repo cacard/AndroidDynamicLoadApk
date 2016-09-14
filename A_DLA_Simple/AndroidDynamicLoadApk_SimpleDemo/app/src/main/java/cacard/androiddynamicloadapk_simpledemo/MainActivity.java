@@ -22,7 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     /**
      * 要调起的Client中哪个Activity？使用包路名名
      */
-    static final String targetActivityInClient = "cacard.androiddynamicloadapk_client.MainActivity";
+    static final String targetActivityInClient = "cacard.androiddynamicloadapk_client.SomeActivity";
 
     // test
     public MainActivity() {
